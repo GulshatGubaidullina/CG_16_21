@@ -1,5 +1,6 @@
 #include "technique.h"
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 struct DirectionLight
 {
@@ -15,15 +16,23 @@ public:
     LightingTechnique();
     virtual bool Init();
 
-    void SetWVP(const glm::mat4* WVP);
-    void SetWorldMatrix(const glm::mat4* WVP);
+    void SetWVP(const glm::mat4& WVP);
+    void SetWorldMatrix(const glm::mat4& WVP);
     void SetTextureUnit(unsigned int TextureUnit);
     void SetDirectionalLight(const DirectionLight& Light);
+
+    void SetEyeWorldPos(const glm::vec3& EyeWorldPos);
+    void SetMatSpecularIntensity(float Intensity);
+    void SetMatSpecularPower(float Power);
 
 private:
     GLuint m_WVPLocation;
     GLuint m_WorldMatrixLocation;
     GLuint m_samplerLocation;
+
+    GLuint m_eyeWorldPosition;
+    GLuint m_matSpecularIntensityLocation;
+    GLuint m_matSpecularPowerLocation;
     struct {
         GLuint Color;
         GLuint AmbientIntensity;
@@ -31,7 +40,6 @@ private:
         GLuint DiffuseIntensity;
     } m_dirLightLocation;
 };
-
 
 static const char* pVS = "                                                          \n\
 #version 330                                                                        \n\
@@ -45,12 +53,14 @@ uniform mat4 gWorld;                                                            
                                                                                     \n\
 out vec2 TexCoord0;                                                                 \n\
 out vec3 Normal0;                                                                   \n\
+out vec3 WorldPos0;                                                                 \n\
                                                                                     \n\
 void main()                                                                         \n\
 {                                                                                   \n\
     gl_Position = gWVP * vec4(Position, 1.0);                                       \n\
     TexCoord0 = TexCoord;                                                           \n\
-    Normal0 = (gWorld * vec4(Normal, 0.0)).xyz;                                     \n\
+    Normal0   = (gWorld * vec4(Normal, 0.0)).xyz;                                   \n\
+    WorldPos0 = (gWorld * vec4(Position, 1.0)).xyz;                                 \n\
 }";
 
 static const char* pFS = "                                                          \n\
@@ -58,6 +68,7 @@ static const char* pFS = "                                                      
                                                                                     \n\
 in vec2 TexCoord0;                                                                  \n\
 in vec3 Normal0;                                                                    \n\
+in vec3 WorldPos0;                                                                  \n\
                                                                                     \n\
 out vec4 FragColor;                                                                 \n\
                                                                                     \n\
@@ -72,27 +83,44 @@ struct DirectionalLight                                                         
 uniform DirectionalLight gDirectionalLight;                                         \n\
 uniform sampler2D gSampler;                                                         \n\
                                                                                     \n\
+uniform vec3 gEyeWorldPos;                                                          \n\
+uniform float gMatSpecularIntensity;                                                \n\
+uniform float gSpecularPower;                                                       \n\
+                                                                                    \n\
 void main()                                                                         \n\
 {                                                                                   \n\
     vec4 AmbientColor = vec4(gDirectionalLight.Color, 1.0f) *                       \n\
                         gDirectionalLight.AmbientIntensity;                         \n\
                                                                                     \n\
-    float DiffuseFactor = dot(normalize(Normal0), -gDirectionalLight.Direction);    \n\
+    vec3 LightDirection = -gDirectionalLight.Direction;                             \n\
+    vec3 Normal = normalize(Normal0);                                               \n\
                                                                                     \n\
-    vec4 DiffuseColor;                                                              \n\
+    float DiffuseFactor = dot(Normal, LightDirection);                              \n\
+                                                                                    \n\
+    vec4 DiffuseColor  = vec4(0, 0, 0, 0);                                          \n\
+    vec4 SpecularColor = vec4(0, 0, 0, 0);                                          \n\
                                                                                     \n\
     if (DiffuseFactor > 0){                                                         \n\
         DiffuseColor = vec4(gDirectionalLight.Color, 1.0f) *                        \n\
                        gDirectionalLight.DiffuseIntensity *                         \n\
                        DiffuseFactor;                                               \n\
-    }                                                                               \n\
-    else{                                                                           \n\
-        DiffuseColor = vec4(0,0,0,0);                                               \n\
+                                                                                    \n\
+        vec3 VertexToEye = normalize(gEyeWorldPos - WorldPos0);                     \n\
+        vec3 LightReflect = normalize(reflect(gDirectionalLight.Direction, Normal));\n\
+        float SpecularFactor = dot(VertexToEye, LightReflect);                      \n\
+        SpecularFactor = pow(SpecularFactor, gSpecularPower);                       \n\
+                                                                                    \n\
+        if (SpecularFactor > 0){                                                    \n\
+            SpecularColor = vec4(gDirectionalLight.Color, 1.0f) *                   \n\
+                            gMatSpecularIntensity *                                 \n\
+                            SpecularFactor;                                         \n\
+        }                                                                           \n\
     }                                                                               \n\
                                                                                     \n\
     FragColor = texture2D(gSampler, TexCoord0.xy) *                                 \n\
-                (AmbientColor + DiffuseColor);                                      \n\
+                (AmbientColor + DiffuseColor + SpecularColor);                      \n\
 }";
+
 
 LightingTechnique::LightingTechnique() {
 }
@@ -122,6 +150,11 @@ bool LightingTechnique::Init()
     m_WVPLocation = GetUniformLocation("gWVP");
     m_WorldMatrixLocation = GetUniformLocation("gWorld");
     m_samplerLocation = GetUniformLocation("gSampler");
+
+    m_eyeWorldPosition = GetUniformLocation("gEyeWorldPos");
+    m_matSpecularIntensityLocation = GetUniformLocation("gMatSpecularIntensity");
+    m_matSpecularPowerLocation = GetUniformLocation("gSpecularPower");
+
     m_dirLightLocation.Color = GetUniformLocation("gDirectionalLight.Color");
     m_dirLightLocation.AmbientIntensity = GetUniformLocation("gDirectionalLight.AmbientIntensity");
     m_dirLightLocation.Direction = GetUniformLocation("gDirectionalLight.Direction");
@@ -140,17 +173,15 @@ bool LightingTechnique::Init()
     return true;
 }
 
-void LightingTechnique::SetWVP(const glm::mat4* WVP)
+void LightingTechnique::SetWVP(const glm::mat4& WVP)
 {
-    glUniformMatrix4fv(m_WVPLocation, 1, GL_TRUE, (const GLfloat*)WVP);
+    glUniformMatrix4fv(m_WVPLocation, 1, GL_TRUE, glm::value_ptr(WVP));
 }
 
-inline void LightingTechnique::SetWorldMatrix(const glm::mat4* WVP)
+void LightingTechnique::SetWorldMatrix(const glm::mat4& WorldInverse)
 {
-    glUniformMatrix4fv(m_WorldMatrixLocation, 1, GL_TRUE, (const GLfloat*)WVP);
-
+    glUniformMatrix4fv(m_WorldMatrixLocation, 1, GL_TRUE, glm::value_ptr(WorldInverse));
 }
-
 
 void LightingTechnique::SetTextureUnit(unsigned int TextureUnit)
 {
@@ -158,12 +189,13 @@ void LightingTechnique::SetTextureUnit(unsigned int TextureUnit)
 }
 
 
+
 void LightingTechnique::SetDirectionalLight(const DirectionLight& Light)
 {
     glUniform3f(m_dirLightLocation.Color, Light.Color.x, Light.Color.y, Light.Color.z);
     glUniform1f(m_dirLightLocation.AmbientIntensity, Light.AmbientIntensity);
     glm::vec3 Direction = Light.Direction;
-    glm::normalize(Direction);
+    Direction = glm::normalize(Direction);
     glUniform3f(m_dirLightLocation.Direction, Direction.x, Direction.y, Direction.z);
     glUniform1f(m_dirLightLocation.DiffuseIntensity, Light.DiffuseIntensity);
 }

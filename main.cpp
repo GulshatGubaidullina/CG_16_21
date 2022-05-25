@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <string.h>
-#include <assert.h>
 #include <math.h>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -10,9 +7,8 @@
 #include "texture.h"
 #include "lighting_technique.h"
 #include "glut_backend.h"
-#include "util.h"
 
-
+#define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 #define WINDOW_WIDTH  1280
 #define WINDOW_HEIGHT 1024
 
@@ -57,19 +53,19 @@ public:
 
     bool Init()
     {
-        glm::vec3 Pos(0.0f, 0.0, -3.0);
-        glm::vec3 Target(0.0f, 0.0, 1.0);
-        glm::vec3 Up(0.0f, 1.0, 0.0);
-
+        glm::vec3 Pos(0.0f, 0.0f, -3.0f);
+        glm::vec3 Target(0.0f, 0.0f, 1.0f);
+        glm::vec3 Up(0.0, 1.0f, 0.0f);
         m_pGameCamera = new Camera(WINDOW_WIDTH, WINDOW_HEIGHT, Pos, Target, Up);
 
         unsigned int Indices[] = { 0, 3, 1,
                                    1, 3, 2,
                                    2, 3, 0,
                                    1, 2, 0 };
-        int a = sizeof(Indices);
-        CreateVertexBuffer(Indices, a);
-        CreateIndexBuffer(Indices, ARRAY_SIZE_IN_ELEMENTS(Indices));
+
+        CreateIndexBuffer(Indices, sizeof(Indices));
+
+        CreateVertexBuffer(Indices, ARRAY_SIZE_IN_ELEMENTS(Indices));
 
         m_pEffect = new LightingTechnique();
 
@@ -111,7 +107,7 @@ public:
         p.SetCamera(m_pGameCamera->GetPos(), m_pGameCamera->GetTarget(), m_pGameCamera->GetUp());
         p.perspectiveProj(60.0f, WINDOW_WIDTH, WINDOW_HEIGHT, 1.0f, 100.0f);
         m_pEffect->SetWVP(p.GetWVPTrans());
-        const glm::mat4* WorldTransformation = p.GetWorldTrans();
+        const glm::mat4& WorldTransformation = p.GetWorldTrans();
         m_pEffect->SetWorldMatrix(WorldTransformation);
         m_pEffect->SetDirectionalLight(m_directionalLight);
 
@@ -179,14 +175,14 @@ private:
 
     void CalcNormals(const unsigned int* pIndices, unsigned int IndexCount,
         Vertex* pVertices, unsigned int VertexCount) {
-        for (unsigned int i = 0; i < (IndexCount/4); i += 3) {
+        for (unsigned int i = 0; i < IndexCount; i += 3) {
             unsigned int Index0 = pIndices[i];
             unsigned int Index1 = pIndices[i + 1];
             unsigned int Index2 = pIndices[i + 2];
             glm::vec3 v1 = pVertices[Index1].m_pos - pVertices[Index0].m_pos;
             glm::vec3 v2 = pVertices[Index2].m_pos - pVertices[Index0].m_pos;
             glm::vec3 Normal = glm::cross(v1, v2);
-            glm::normalize(Normal);
+            Normal = glm::normalize(Normal);
 
             pVertices[Index0].m_normal += Normal;
             pVertices[Index1].m_normal += Normal;
@@ -194,9 +190,10 @@ private:
         }
 
         for (unsigned int i = 0; i < VertexCount; i++) {
-            glm::normalize(pVertices[i].m_normal);
+            pVertices[i].m_normal = glm::normalize(pVertices[i].m_normal);
         }
     }
+
 
     void CreateVertexBuffer(const unsigned int* pIndices, unsigned int IndexCount)
     {
@@ -206,6 +203,7 @@ private:
                                Vertex(glm::vec3(0.0f, 1.0f, 0.0f),      glm::vec2(0.5f, 1.0f)) };
 
         unsigned int VertexCount = ARRAY_SIZE_IN_ELEMENTS(Vertices);
+
         CalcNormals(pIndices, IndexCount, Vertices, VertexCount);
 
         glGenBuffers(1, &m_VBO);
@@ -215,11 +213,11 @@ private:
 
     void CreateIndexBuffer(const unsigned int* pIndices, unsigned int SizeInBytes)
     {
-        
         glGenBuffers(1, &m_IBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, SizeInBytes, pIndices, GL_STATIC_DRAW);
     }
+
 
     GLuint m_VBO;
     GLuint m_IBO;
