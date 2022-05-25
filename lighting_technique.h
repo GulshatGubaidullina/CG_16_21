@@ -166,6 +166,9 @@ bool LightingTechnique::Init()
         m_samplerLocation == 0xFFFFFFFF ||
         m_dirLightLocation.Color == 0xFFFFFFFF ||
         m_dirLightLocation.DiffuseIntensity == 0xFFFFFFFF ||
+        m_eyeWorldPosition == 0xFFFFFFFF ||
+        m_matSpecularIntensityLocation == 0xFFFFFFFF ||
+        m_matSpecularPowerLocation == 0xFFFFFFFF ||
         m_dirLightLocation.Direction == 0xFFFFFFFF) {
         return false;
     }
@@ -188,7 +191,20 @@ void LightingTechnique::SetTextureUnit(unsigned int TextureUnit)
     glUniform1i(m_samplerLocation, TextureUnit);
 }
 
+void LightingTechnique::SetMatSpecularIntensity(float Intensity)
+{
+    glUniform1f(m_matSpecularIntensityLocation, Intensity);
+}
 
+void LightingTechnique::SetMatSpecularPower(float Power)
+{
+    glUniform1f(m_matSpecularPowerLocation, Power);
+}
+
+void LightingTechnique::SetEyeWorldPos(const glm::vec3& EyeWorldPos)
+{
+    glUniform3f(m_eyeWorldPosition, EyeWorldPos[0], EyeWorldPos[1], EyeWorldPos[2]);
+}
 
 void LightingTechnique::SetDirectionalLight(const DirectionLight& Light)
 {

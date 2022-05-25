@@ -1,4 +1,8 @@
 #include "callbacks.h"
+#include <windows.h>
+#include <stdio.h>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 
 void GLUTBackendInit(int argc, char** argv);
 
@@ -6,10 +10,6 @@ bool GLUTBackendCreateWindow(unsigned int Width, unsigned int Height, unsigned i
 
 void GLUTBackendRun(ICallbacks* pCallbacks);
 
-#include <windows.h>
-#include <stdio.h>
-#include <GL/glew.h>
-#include <GL/freeglut.h>
 
 static ICallbacks* s_pCallbacks = NULL;
 
