@@ -2,18 +2,16 @@
 #define GLUT_BACKEND_H
 
 #include "callbacks.h"
+#include <windows.h>
+#include <stdio.h>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 
 void GLUTBackendInit(int argc, char** argv);
 
 bool GLUTBackendCreateWindow(unsigned int Width, unsigned int Height, unsigned int bpp, bool isFullScreen, const char* pTitle);
 
 void GLUTBackendRun(ICallbacks* pCallbacks);
-
-#include <unistd.h>
-#include <stdio.h>
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-
 
 static ICallbacks* s_pCallbacks = NULL;
 

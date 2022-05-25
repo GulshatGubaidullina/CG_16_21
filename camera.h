@@ -132,10 +132,10 @@ void Camera::Init()
 
     m_AngleV = -glm::degrees(asin(m_target.y));
 
-    m_OnUpperEdge = false;
+    /*m_OnUpperEdge = false;
     m_OnLowerEdge = false;
     m_OnLeftEdge = false;
-    m_OnRightEdge = false;
+    m_OnRightEdge = false;*/
     m_mousePos[0] = m_windowWidth / 2;
     m_mousePos[1] = m_windowHeight / 2;
 
