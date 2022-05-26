@@ -39,8 +39,8 @@ public:
         m_pEffect = NULL;
         m_scale = 0.0f;
         m_directionalLight.Color = glm::vec3(1.0f, 1.0f, 1.0f);
-        m_directionalLight.AmbientIntensity = 0.0f;
-        m_directionalLight.DiffuseIntensity = 0.75f;
+        m_directionalLight.AmbientIntensity = -0.1f;
+        m_directionalLight.DiffuseIntensity = 0.0f;
         m_directionalLight.Direction = glm::vec3(1.0f, 0.0, 0.0);
     }
 
@@ -53,15 +53,13 @@ public:
 
     bool Init()
     {
-        glm::vec3 Pos(0.0f, 0.0f, -3.0f);
+        glm::vec3 Pos(0.0f, 0.0f, 0.0f);
         glm::vec3 Target(0.0f, 0.0f, 1.0f);
         glm::vec3 Up(0.0, 1.0f, 0.0f);
         m_pGameCamera = new Camera(WINDOW_WIDTH, WINDOW_HEIGHT, Pos, Target, Up);
 
-        unsigned int Indices[] = { 0, 3, 1,
-                                   1, 3, 2,
-                                   2, 3, 0,
-                                   1, 2, 0 };
+        unsigned int Indices[] =  { 0, 2, 1,
+                                   0, 3, 2};
 
         CreateIndexBuffer(Indices, sizeof(Indices));
 
@@ -101,8 +99,27 @@ public:
 
         m_scale += 0.1f;
 
+
+        PointLight pl[3];
+        pl[0].DiffuseIntensity = 0.5f;
+        pl[0].Color = glm::vec3(1.0f, 0.0f, 0.0f);
+        pl[0].Position = glm::vec3(sinf(m_scale) * 10, 1.0f, cosf(m_scale) * 10);
+        pl[0].Attenuation.Linear = 0.1f;
+
+        pl[1].DiffuseIntensity = 0.5f;
+        pl[1].Color = glm::vec3(0.0f, 1.0f, 0.0f);
+        pl[1].Position = glm::vec3(sinf(m_scale + 2.1f) * 10, 1.0f, cosf(m_scale + 2.1f) * 10);
+        pl[1].Attenuation.Linear = 0.1f;
+
+        pl[2].DiffuseIntensity = 0.5f;
+        pl[2].Color = glm::vec3(0.0f, 0.0f, 1.0f);
+        pl[2].Position = glm::vec3(sinf(m_scale + 4.2f) * 10, 1.0f, cosf(m_scale + 4.2f) * 10);
+        pl[2].Attenuation.Linear = 0.1f;
+
+        m_pEffect->SetPointLights(3, pl);
+
         Pipeline p;
-        p.rotate(0.0f, m_scale, 0.0f);
+        p.rotate(0.0f, 0.0f, 0.0f);
         p.worldPos(0.0f, 0.0f, 1.0f);
         p.SetCamera(m_pGameCamera->GetPos(), m_pGameCamera->GetTarget(), m_pGameCamera->GetUp());
         p.perspectiveProj(60.0f, WINDOW_WIDTH, WINDOW_HEIGHT, 1.0f, 100.0f);
@@ -200,10 +217,10 @@ private:
 
     void CreateVertexBuffer(const unsigned int* pIndices, unsigned int IndexCount)
     {
-        Vertex Vertices[4] = { Vertex(glm::vec3(-1.0f, -1.0f, 0.5773f), glm::vec2(0.0f, 0.0f)),
-                               Vertex(glm::vec3(0.0f, -1.0f, -1.15475), glm::vec2(0.5f, 0.0f)),
-                               Vertex(glm::vec3(1.0f, -1.0f, 0.5773f),  glm::vec2(1.0f, 0.0f)),
-                               Vertex(glm::vec3(0.0f, 1.0f, 0.0f),      glm::vec2(0.5f, 1.0f)) };
+        Vertex Vertices[4] = { Vertex(glm::vec3(-10.0f, -2.0f, -10.0f), glm::vec2(0.0f, 0.0f)),
+                               Vertex(glm::vec3(10.0f, -2.0f, -10.0f), glm::vec2(1.0f, 0.0f)),
+                               Vertex(glm::vec3(10.0f, -2.0f, 10.0f),  glm::vec2(1.0f, 1.0f)),
+                               Vertex(glm::vec3(-10.0f, -2.0f, 10.0f),      glm::vec2(0.0f, 1.0f)) };
 
         unsigned int VertexCount = ARRAY_SIZE_IN_ELEMENTS(Vertices);
 
@@ -228,7 +245,7 @@ private:
     Texture* m_pTexture;
     Camera* m_pGameCamera;
     float m_scale;
-    DirectionLight m_directionalLight;
+    DirectionalLight m_directionalLight;
 };
 
 

@@ -11,6 +11,7 @@ bool GLUTBackendCreateWindow(unsigned int Width, unsigned int Height, unsigned i
 void GLUTBackendRun(ICallbacks* pCallbacks);
 
 
+
 static ICallbacks* s_pCallbacks = NULL;
 
 static void SpecialKeyboardCB(int Key, int x, int y) {

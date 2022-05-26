@@ -1,8 +1,5 @@
 #include <GL/glew.h>
 #include <list>
-#include <stdio.h>
-#include <string.h>
-
 
 class Technique
 {
@@ -23,6 +20,8 @@ private:
     ShaderObjList m_shaderObjList;
 };
 
+#include <stdio.h>
+#include <string.h>
 
 
 Technique::Technique() {

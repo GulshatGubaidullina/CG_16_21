@@ -119,7 +119,7 @@ void Camera::Init()
     m_mousePos[0] = m_windowWidth / 2;
     m_mousePos[1] = m_windowHeight / 2;
 
-    glutWarpPointer(m_mousePos[0], m_mousePos[1]);// גמ געמנמל גלוסעמ 1 בûכמ 0
+    glutWarpPointer(m_mousePos[0], m_mousePos[0]);
 }
 
 
