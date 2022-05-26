@@ -39,7 +39,7 @@ public:
         m_pEffect = NULL;
         m_scale = 0.0f;
         m_directionalLight.Color = glm::vec3(1.0f, 1.0f, 1.0f);
-        m_directionalLight.AmbientIntensity = -0.1f;
+        m_directionalLight.AmbientIntensity = 0.0f;
         m_directionalLight.DiffuseIntensity = 0.0f;
         m_directionalLight.Direction = glm::vec3(1.0f, 0.0, 0.0);
     }
@@ -53,13 +53,13 @@ public:
 
     bool Init()
     {
-        glm::vec3 Pos(0.0f, 0.0f, 0.0f);
-        glm::vec3 Target(0.0f, 0.0f, 1.0f);
+        glm::vec3 Pos(-10.0f, 0.0f, -10.0f);
+        glm::vec3 Target(1.0f, 0.0f, 1.0f);
         glm::vec3 Up(0.0, 1.0f, 0.0f);
         m_pGameCamera = new Camera(WINDOW_WIDTH, WINDOW_HEIGHT, Pos, Target, Up);
 
-        unsigned int Indices[] =  { 0, 2, 1,
-                                   0, 3, 2};
+        unsigned int Indices[] = { 0, 2, 1,
+                                   0, 3, 2 };
 
         CreateIndexBuffer(Indices, sizeof(Indices));
 
@@ -99,30 +99,28 @@ public:
 
         m_scale += 0.1f;
 
+        SpotLight sl[2];
+        sl[0].DiffuseIntensity = 15.0f;
+        sl[0].Color = glm::vec3(1.0f, 1.0f, 0.7f);
+        sl[0].Position = glm::vec3(-0.0f, -1.9f, -0.0f);
+        sl[0].Direction = glm::vec3(sinf(m_scale), 0.0f, cosf(m_scale));
+        sl[0].Attenuation.Linear = 0.1f;
+        sl[0].Cutoff = 20.0f;
 
-        PointLight pl[3];
-        pl[0].DiffuseIntensity = 0.5f;
-        pl[0].Color = glm::vec3(1.0f, 0.0f, 0.0f);
-        pl[0].Position = glm::vec3(sinf(m_scale) * 10, 1.0f, cosf(m_scale) * 10);
-        pl[0].Attenuation.Linear = 0.1f;
+        sl[1].DiffuseIntensity = 5.0f;
+        sl[1].Color = glm::vec3(0.0f, 1.0f, 1.0f);
+        sl[1].Position = m_pGameCamera->GetPos();
+        sl[1].Direction = m_pGameCamera->GetTarget();
+        sl[1].Attenuation.Linear = 0.1f;
+        sl[1].Cutoff = 10.0f;
 
-        pl[1].DiffuseIntensity = 0.5f;
-        pl[1].Color = glm::vec3(0.0f, 1.0f, 0.0f);
-        pl[1].Position = glm::vec3(sinf(m_scale + 2.1f) * 10, 1.0f, cosf(m_scale + 2.1f) * 10);
-        pl[1].Attenuation.Linear = 0.1f;
-
-        pl[2].DiffuseIntensity = 0.5f;
-        pl[2].Color = glm::vec3(0.0f, 0.0f, 1.0f);
-        pl[2].Position = glm::vec3(sinf(m_scale + 4.2f) * 10, 1.0f, cosf(m_scale + 4.2f) * 10);
-        pl[2].Attenuation.Linear = 0.1f;
-
-        m_pEffect->SetPointLights(3, pl);
+        m_pEffect->SetSpotLights(2, sl);
 
         Pipeline p;
         p.rotate(0.0f, 0.0f, 0.0f);
         p.worldPos(0.0f, 0.0f, 1.0f);
         p.SetCamera(m_pGameCamera->GetPos(), m_pGameCamera->GetTarget(), m_pGameCamera->GetUp());
-        p.perspectiveProj(60.0f, WINDOW_WIDTH, WINDOW_HEIGHT, 1.0f, 100.0f);
+        p.perspectiveProj(60.0f, WINDOW_WIDTH, WINDOW_HEIGHT, 0.1f, 100.0f);
         m_pEffect->SetWVP(p.GetWVPTrans());
         const glm::mat4& WorldTransformation = p.GetWorldTrans();
         m_pEffect->SetWorldMatrix(WorldTransformation);
@@ -219,8 +217,8 @@ private:
     {
         Vertex Vertices[4] = { Vertex(glm::vec3(-10.0f, -2.0f, -10.0f), glm::vec2(0.0f, 0.0f)),
                                Vertex(glm::vec3(10.0f, -2.0f, -10.0f), glm::vec2(1.0f, 0.0f)),
-                               Vertex(glm::vec3(10.0f, -2.0f, 10.0f),  glm::vec2(1.0f, 1.0f)),
-                               Vertex(glm::vec3(-10.0f, -2.0f, 10.0f),      glm::vec2(0.0f, 1.0f)) };
+                               Vertex(glm::vec3(10.0f, -2.0f, 10.0f), glm::vec2(1.0f, 1.0f)),
+                               Vertex(glm::vec3(-10.0f, -2.0f, 10.0f), glm::vec2(0.0f, 1.0f)) };
 
         unsigned int VertexCount = ARRAY_SIZE_IN_ELEMENTS(Vertices);
 
