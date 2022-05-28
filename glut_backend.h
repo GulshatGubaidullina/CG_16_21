@@ -11,7 +11,6 @@ bool GLUTBackendCreateWindow(unsigned int Width, unsigned int Height, unsigned i
 void GLUTBackendRun(ICallbacks* pCallbacks);
 
 
-
 static ICallbacks* s_pCallbacks = NULL;
 
 static void SpecialKeyboardCB(int Key, int x, int y) {
@@ -76,6 +75,9 @@ void GLUTBackendRun(ICallbacks* pCallbacks) {
     }
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+    glEnable(GL_DEPTH_TEST);
+
     glFrontFace(GL_CW);
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);

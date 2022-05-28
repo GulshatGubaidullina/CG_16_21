@@ -1,6 +1,6 @@
-#include <glm/glm.hpp>
+п»ї#include <glm/glm.hpp>
 #define _USE_MATH_DEFINES
-#include <math.h> // число pi
+#include <math.h> // Г·ГЁГ±Г«Г® pi
 
 #define ToRadian(x) ((x) * M_PI / 180.0f)
 #define ToDegree(x) ((x) * 180.0f / M_PI)
@@ -249,7 +249,7 @@ const glm::mat4* Pipeline::GetTrans()
     //initTranslationTransform(translationTrans);
     //SetPerspectiveProj(persProjTrans);
 
-    // glm не умеет умножать матрицы, поэтому написал свою функцию
+    // glm Г­ГҐ ГіГ¬ГҐГҐГІ ГіГ¬Г­Г®Г¦Г ГІГј Г¬Г ГІГ°ГЁГ¶Г», ГЇГ®ГЅГІГ®Г¬Гі Г­Г ГЇГЁГ±Г Г« Г±ГўГ®Гѕ ГґГіГ­ГЄГ¶ГЁГѕ
     m_transformation = MatrixMultiplicationIdk(persProjTrans, CameraRotateTrans);
     m_transformation = MatrixMultiplicationIdk(m_transformation, CameraTranslationTrans);
     m_transformation = MatrixMultiplicationIdk(m_transformation, translationTrans);

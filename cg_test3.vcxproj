@@ -72,15 +72,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Users\79876\source\repos\cg_test3\assimp-5.2.4\build\lib;$(SolutionDir)/External/assimp/lib;C:\Program Files\ImageMagick\lib</IncludePath>
+    <LibraryPath>$(SolutionDir)/External/assimp/lib;C:\Program Files\ImageMagick\lib;C:\Users\79876\source\repos\cg_test3\assimp-5.2.4\build\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Users\79876\source\repos\cg_test3\assimp-5.2.4\build\lib;$(SolutionDir)/External/assimp/lib;C:\Program Files\ImageMagick\lib</IncludePath>
+    <LibraryPath>$(SolutionDir)/External/assimp/lib;C:\Program Files\ImageMagick\lib;C:\Users\79876\source\repos\cg_test3\assimp-5.2.4\build\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)\External\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files\ImageMagick\lib</IncludePath>
+    <LibraryPath>$(SolutionDir)\External\lib;C:\Program Files\ImageMagick\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Users\79876\source\repos\cg_test3\assimp-5.2.4\build\lib;$(SolutionDir)/External/assimp/lib;C:\Program Files\ImageMagick\lib</IncludePath>
+    <LibraryPath>$(SolutionDir)/External/assimp/lib;C:\Program Files\ImageMagick\lib;C:\Users\79876\source\repos\cg_test3\assimp-5.2.4\build\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -88,10 +96,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)/External/assimp/include;C:\Program Files\ImageMagick\include;C:\Source\assimp-5.2.3\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\79876\source\repos\cg_test3\assimp-5.2.4\build\lib;$(SolutionDir)/External/assimp/lib;C:\Program Files\ImageMagick\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -102,26 +113,30 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)/External/assimp/include;C:\Program Files\ImageMagick\include;C:\Source\assimp-5.2.3\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Source\assimp-5.2.3\build\lib;C:\Users\79876\source\repos\cg_test3\assimp-5.2.4\build\lib;$(SolutionDir)/External/assimp/lib;C:\Program Files\ImageMagick\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;assimp-vc142-mtd.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files\ImageMagick\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Source\src\lib\freeglut\include;C:\Users\79876\source\repos\cg_test3\External\glfw\include;C:\Source\glfw\glfw-3.3.7\include;C:\Program Files\ImageMagick\include;C:\Users\79876\source\repos\cg_test3\External\include\assimp;C:\Source\src\lib\glew-2.2.0\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Program Files\ImageMagick\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\79876\source\repos\cg_test3\External\lib\assimp;C:\Source\src\lib\freeglut\lib\x64;C:\Users\79876\source\repos\cg_test3\External\glfw\lib;C:\Source\glfw\glfw-3.3.7\build\x64\Debug;C:\Source\glfw\glfw-3.3.7\build\src\Debug;C:\Source\src\lib\glew-2.2.0\lib\Debug\x64;C:\Program Files\ImageMagick\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;assimp-vc142-mtd.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;opengl32.lib;GLFW\glfw3.lib;glew32sd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,30 +145,41 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files\ImageMagick\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\ImageMagick\include;C:\Source\assimp-5.2.3\include;C:\Source\glfw\glfw-3.3.7\include;$(SolutionDir)/External/assimp/include;C:\Users\79876\source\repos\cg_test3\assimp-5.2.4\build\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Program Files\ImageMagick\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Source\glfw\glfw-3.3.7\build\src\Debug;C:\Source\glfw\glfw-3.3.7\build\x64\Debug;C:\Source\glfw\glfw-3.3.7\build\x64\Release;C:\Users\79876\source\repos\cg_test3\assimp-5.2.4\build\lib;$(SolutionDir)/External/assimp/lib;C:\Program Files\ImageMagick\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;assimp-vc142-mtd.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;opengl32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="callbacks.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="glut_backend.h" />
     <ClInclude Include="lighting_technique.h" />
+    <ClInclude Include="mesh.h" />
     <ClInclude Include="pipeline.h" />
+    <ClInclude Include="shadow_map_fbo.h" />
+    <ClInclude Include="shadow_map_technique.h" />
     <ClInclude Include="technique.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assimp-vc142-mtd.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="External\lib\assimp\assimp-vc142-mtd.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

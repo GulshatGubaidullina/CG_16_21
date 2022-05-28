@@ -1,11 +1,15 @@
-#include <GL/glew.h>
+п»ї#include <GL/glew.h>
 #include <list>
+#include <stdio.h>
+#include <string.h>
+
+#define INVALID_UNIFORM_LOCATION 0xFFFFFFFF
 
 class Technique
 {
 public:
     Technique();
-    ~Technique();
+    virtual ~Technique();
     virtual bool Init();
     void Enable();
 
@@ -19,9 +23,6 @@ private:
     typedef std::list<GLuint> ShaderObjList;
     ShaderObjList m_shaderObjList;
 };
-
-#include <stdio.h>
-#include <string.h>
 
 
 Technique::Technique() {
@@ -50,7 +51,7 @@ bool Technique::Init() {
     return true;
 }
 
-//Используем этот метод для добавления шейдеров в программу. Когда заканчиваем - вызываем finalize()
+//Г€Г±ГЇГ®Г«ГјГ§ГіГҐГ¬ ГЅГІГ®ГІ Г¬ГҐГІГ®Г¤ Г¤Г«Гї Г¤Г®ГЎГ ГўГ«ГҐГ­ГЁГї ГёГҐГ©Г¤ГҐГ°Г®Гў Гў ГЇГ°Г®ГЈГ°Г Г¬Г¬Гі. ГЉГ®ГЈГ¤Г  Г§Г ГЄГ Г­Г·ГЁГўГ ГҐГ¬ - ГўГ»Г§Г»ГўГ ГҐГ¬ finalize()
 bool Technique::AddShader(GLenum ShaderType, const char* pShaderText) {
     GLuint ShaderObj = glCreateShader(ShaderType);
 
@@ -59,7 +60,7 @@ bool Technique::AddShader(GLenum ShaderType, const char* pShaderText) {
         return false;
     }
 
-    // Сохраним объект шейдера - он будет удален в декструкторе
+    // Г‘Г®ГµГ°Г Г­ГЁГ¬ Г®ГЎГєГҐГЄГІ ГёГҐГ©Г¤ГҐГ°Г  - Г®Г­ ГЎГіГ¤ГҐГІ ГіГ¤Г Г«ГҐГ­ Гў Г¤ГҐГЄГ±ГІГ°ГіГЄГІГ®Г°ГҐ
     m_shaderObjList.push_back(ShaderObj);
 
     const GLchar* p[1];
@@ -84,9 +85,8 @@ bool Technique::AddShader(GLenum ShaderType, const char* pShaderText) {
 
     return true;
 }
-
-// После добавления всех шейдеров в программу вызываем эту функцию
-// для линковки и проверки программу на ошибки
+// РџРѕСЃР»Рµ РґРѕР±Р°РІР»РµРЅРёСЏ РІСЃРµС… С€РµР№РґРµСЂРѕРІ РІ РїСЂРѕРіСЂР°РјРјСѓ РІС‹Р·С‹РІР°РµРј СЌС‚Сѓ С„СѓРЅРєС†РёСЋ
+// РґР»СЏ Р»РёРЅРєРѕРІРєРё Рё РїСЂРѕРІРµСЂРєРё РїСЂРѕРіСЂР°РјРјСѓ РЅР° РѕС€РёР±РєРё
 bool Technique::Finalize() {
     GLint Success = 0;
     GLchar ErrorLog[1024] = { 0 };
@@ -108,7 +108,7 @@ bool Technique::Finalize() {
         return false;
     }
 
-    // Удаляем промежуточные объекты шейдеров, которые были добавлены в программу
+    // РЈРґР°Р»СЏРµРј РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РѕР±СЉРµРєС‚С‹ С€РµР№РґРµСЂРѕРІ, РєРѕС‚РѕСЂС‹Рµ Р±С‹Р»Рё РґРѕР±Р°РІР»РµРЅС‹ РІ РїСЂРѕРіСЂР°РјРјСѓ
     for (ShaderObjList::iterator it = m_shaderObjList.begin(); it != m_shaderObjList.end(); it++) {
         glDeleteShader(*it);
     }

@@ -1,4 +1,4 @@
-#include <GL/glew.h>
+﻿#include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <glm/glm.hpp>
 #include "glm/gtc/matrix_transform.hpp"
@@ -119,7 +119,7 @@ void Camera::Init()
     m_mousePos[0] = m_windowWidth / 2;
     m_mousePos[1] = m_windowHeight / 2;
 
-    glutWarpPointer(m_mousePos[0], m_mousePos[0]);
+    glutWarpPointer(m_mousePos[0], m_mousePos[1]);// âî âòîðîì âìåñòî 1 áûëî 0
 }
 
 
